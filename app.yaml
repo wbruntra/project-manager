@@ -1,20 +1,15 @@
-application: python-simple
-version: 1
 runtime: python27
 api_version: 1
 threadsafe: yes
-
-inbound_services:
-- channel_presence
 
 handlers:
 - url: /favicon\.ico
   static_files: favicon.ico
   upload: favicon\.ico
 
-- url: /(.*\.(gif|jpg|js|css))
+- url: /(.*\.(gif|jpg|js|css|png))
   static_files: \1
-  upload: (.*\.(gif|jpg|js|css))
+  upload: (.*\.(gif|jpg|js|css|png))
 
 - url: /(.*\.html)
   static_files: pages/\1

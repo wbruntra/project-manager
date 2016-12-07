@@ -18,15 +18,14 @@ import os
 
 import jinja2
 import webapp2
-import HTMLParser
 
-from google.appengine.api import channel
 from google.appengine.ext import ndb
 
-import uuid
-import random
-
 import json
+
+class Animal(ndb.Model):
+    name = ndb.StringProperty()
+    date = ndb.DateTimeProperty(auto_now_add = True)
 
 template_dir = os.path.join(os.path.dirname(__file__),'templates')
 jinja_env = jinja2.Environment(loader = jinja2.FileSystemLoader(template_dir),
