@@ -1,16 +1,8 @@
 body {
-  background-color: #588c7e;
+  background-color: #6495ed;
 }
-
 .container {
-  width: 940px;
   margin: 20px auto;
   padding: 80px;
-  background-color: white;
+  background-color: #fff;
 }
-
-/*color: #588c7e
-color: #f2e394
-#f2ae72
-#d96459
-#8c4646*/
