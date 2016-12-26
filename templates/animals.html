@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Hello World</title>
+    <link rel="stylesheet" href="/css/style.css">
+  </head>
+  <body>
+    <div class="container">
+    Here come the animals!
+    <form action="/animals" method="post">
+      <input type="text" name="name">
+      <input type="submit" value="Submit">
+    </form>
+    <ul>
+    {% for animal in animals %}
+    <li>{{ animal.name }}</li>
+    {% endfor %}
+  </ul>
+</div>
+  </body>
+</html>
