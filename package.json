@@ -1,0 +1,22 @@
+{
+  "name": "app-engine-template",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wbruntra/python-template.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/wbruntra/python-template/issues"
+  },
+  "homepage": "https://github.com/wbruntra/python-template#readme",
+  "dependencies": {
+    "stylus": "^0.54.5"
+  }
+}
