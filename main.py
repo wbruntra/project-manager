@@ -5,70 +5,74 @@ import os
 import jinja2
 import webapp2
 
-from google.appengine.ext import ndb
-
 import json
 import time
+import datetime
 
 import logging
 
-class Animal(ndb.Model):
-    name = ndb.StringProperty()
-    date = ndb.DateTimeProperty(auto_now_add = True)
+from webapp2_extras import sessions
 
-template_dir = os.path.join(os.path.dirname(__file__),'templates')
-jinja_env = jinja2.Environment(loader = jinja2.FileSystemLoader(template_dir),
-                               autoescape = False)
+from secrets import SESSION_KEY
 
-def render_str(template, **params):
-    t = jinja_env.get_template(template)
-    return t.render(params)
+from master import Handler
+from users import User
+import events
+import subprojects
+import projects
+import users
+import collaborators
 
-class Handler(webapp2.RequestHandler):
-    def write(self, *a, **kw):
-        self.response.out.write(*a, **kw)
+from models import *
+from googlehandlers import decorator
+from projects import get_subprojects
 
-    def render(self, template, **kw):
-        self.response.out.write(render_str(template, **kw))
-
-    def initialize(self, *a, **kw):
-        webapp2.RequestHandler.initialize(self, *a, **kw)
-        if self.request.url.endswith('.json'):
-            self.format = 'json'
-        else:
-            self.format = 'html'
+config = {}
+config['webapp2_extras.sessions'] = {
+    'secret_key': 'ezOhxK7i41amGYUbLC5C',
+}
 
 class MainHandler(Handler):
     def get(self):
-        # this is the line you will change
-        self.render('main.html')
+        email = self.session.get('email')
+        if not email:
+            self.redirect('/login')
+        projects = Project.query().order(Project.created)
+        events = Event.query().order(Event.end)
+        self.render('index.html',
+            projects = projects,
+            events = events)
 
-class GreetingHandler(Handler):
-    def get(self, name):
-        self.write("Hello, %s" % (name))
-
-class AnimalHandler(Handler):
-    def get(self):
-        # import pdb; pdb.set_trace()
-        animals = Animal.query().fetch()
-        if self.format == "json":
-            o = []
-            for animal in animals:
-                o.append({"name": animal.name })
-            msg = json.dumps(o)
-            self.response.headers.add_header('Content-Type', "application/json")
-            self.write(msg)
-        else:
-            self.render('animals.html', animals = animals)
-    def post(self):
-        name = self.request.get('name')
-        animal = Animal(name = name)
-        animal.put()
-        time.sleep(.5)
-        self.redirect('/animals')
+class RetrieveSubprojects(Handler):
+    def get(self, project_id):
+        # email = self.session['email']
+        subprojects = get_subprojects(project_id)
+        message = []
+        for sp in subprojects:
+            o = {'name': sp.name,
+                'id':sp.key.id()}
+            message.append(o)
+        self.render('partials/select.html',
+         subprojects=subprojects);
 
 app = webapp2.WSGIApplication([
     ('/', MainHandler),
-    ('/greet/(.*)', GreetingHandler),
-    ('/animals(?:.json)?', AnimalHandler)
-], debug=True)
+    ('/admin', projects.Manage),
+    ('/events/create', events.Create),
+    ('/events/project', events.List),
+    ('/events/view/([0-9]+)', events.View),
+    ('/events/update/([0-9]+)', events.Update),
+    ('/events/delete/([0-9]+)', events.Delete),
+    ('/projects/create', projects.Create),
+    ('/projects/delete/([0-9]+)', projects.Delete),
+    ('/projects/manage/([0-9]+)', projects.View),
+    ('/subprojects/create', subprojects.Create),
+    ('/subprojects/delete/([0-9]+)', subprojects.Delete),
+    ('/collaborators', collaborators.Manage),
+    ('/collaborators/add', collaborators.Create),
+    ('/login', users.Login),
+    ('/register', users.Register),
+    ('/logout', users.Logout),
+    ('/api/get/subprojects/([0-9]+)', RetrieveSubprojects),
+    (decorator.callback_path, decorator.callback_handler()),
+], config=config, debug=True)

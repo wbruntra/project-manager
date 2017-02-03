@@ -1,0 +1,16 @@
+{% extends 'layout.html' %}
+
+{% block title %}Events{% endblock %}
+
+{% block body %}
+<div class="container">
+  <ul>
+  {% for event in events %}
+  <li>{{ event.summary }} -- {{ event.start.date }}</li>
+  {% endfor %}
+  </ul>
+  <div>
+    {{ events }}
+  </div>
+</div>
+{% endblock %}

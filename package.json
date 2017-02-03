@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/wbruntra/python-template#readme",
   "dependencies": {
+    "bootstrap": "^3.3.7",
     "stylus": "^0.54.5"
   }
 }

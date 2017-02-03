@@ -1,0 +1,19 @@
+{% extends 'layout.html' %}
+
+{% block title %}Can Haz Perms{% endblock %}
+
+{% block body %}
+<div class="container">
+    {% if has_credentials %}
+    <p>Thanks for granting us permission.</p>
+      <p>See <a href="/calendars">your list of calendars</a></p>
+      <p>Please <a href="/events">proceed to the main
+      application</a>.</p>
+    {% else %}
+    <p>Authorize this app to read your google calendar information.<br><a href="{{ url }}"><img class="signin" src="/img/sign-in-with-google.png"></a></p>
+    {% endif %}
+    <p>You can always <a
+      href="https://www.google.com/accounts/b/0/IssuedAuthSubTokens">revoke</a>
+    permission at any time.</p>
+</div>
+{% endblock %}

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Main Page</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="/css/starter-template.css" rel="stylesheet">
+</head>
+
+<body>
+
+    {% include 'partials/navbar.html' %}
+
+    <div class="container">
+
+        <div class="starter-template">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>
+                            Description
+                        </th>
+                        <th>
+                            Project
+                        </th>
+                        <th>
+                            Subproject
+                        </th>
+                        <th>
+                            Start Date
+                        </th>
+                        <th>
+                            End Date
+                        </th>
+                    </tr>
+                </thead>
+                <tbody id="event-list">
+                {% include 'partials/event_list.html' %}
+                </tbody>
+            </table>
+            <hr>
+            <h3>Filter</h3>
+            <form method="post">
+                <div class="checkbox">
+                    {% for project in projects %}
+                    <label class="checkbox-inline">
+              <input type="checkbox" name="project" value="{{ project.key.id() }}"> {{ project.name }}
+            </label> {% endfor %}
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-offset-2 col-sm-10">
+                        <button type="submit" class="btn btn-default">Filter</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+    </div>
+    <!-- /.container -->
+
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+    <script src="/bootstrap/js/bootstrap.min.js"></script>
+    <script src="/js/main.js"></script>
+</body>
+
+</html>

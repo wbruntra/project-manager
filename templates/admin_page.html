@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Appointment Maker</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="datepicker/css/bootstrap-datepicker.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="/css/starter-template.css" rel="stylesheet">
+  </head>
+
+  <body>
+
+    {% include 'partials/navbar.html' %}
+
+    <div class="container">
+      <div class="starter-template">
+        <h2>Projects</h2>
+          <div class="row">
+            <div class="col-sm-8 col-md-8">
+              <div class="panel-group" id="accordion">
+                {% for project in projects %}
+                {% set outer_loop = loop %}
+                <div class="panel panel-default">
+                  <div class="panel-heading">
+                    <h4 class="panel-title">
+                      <a data-toggle="collapse" data-parent="#accordion" href="#collapse-{{ outer_loop.index }}">{{ project.name }}</a>
+                    </h4>
+                  </div>
+                <div id="collapse-{{ outer_loop.index }}" class="panel-collapse collapse out">
+                  <ul class="list-group">
+                    {% for subproject in data[project.key] %}
+                    <li class="list-group-item"> {{ subproject.name }}</li>
+                    {% endfor %}
+                    <li class="list-group-item">
+                      <a data-toggle="modal" data-target="#newSubprojectModal">Create New</li>
+                  </ul>
+                </div>
+              </div>
+                {% endfor %}
+                <div class="panel panel-default">
+                  <div class="panel-heading">
+                    <h4 class="panel-title">
+                      <a data-toggle="modal" data-target="#newProjectModal">(New Project)</a>
+                    </h4>
+                  </div>
+              </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        {% include 'modals/new-project.html' %}
+        {% include 'modals/new-subproject.html' %}
+    <div class="container">
+
+      </div>
+      <hr>
+<div class="col-sm-10">
+  <h2>View or Edit Users</h2>
+  <a href="/collaborators">Edit</a>
+</div>
+    </div><!-- /.container -->
+
+
+
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+    <script src="/bootstrap/js/bootstrap.min.js"></script>
+  </body>
+</html>

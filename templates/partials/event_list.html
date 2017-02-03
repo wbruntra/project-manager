@@ -1,0 +1,20 @@
+{% for event in events %}
+<tr class="clickable-row" data-href="/events/view/{{ event.key.id() }}">
+    <td>
+        {{ event.title }}
+    </td>
+    <td>
+        {{ event.project.get().name }}
+    </td>
+    <td>
+        {{ event.subproject.get().name }}
+    </td>
+    <td>
+      {{ event.start.strftime("%d %b, %Y -- %I:%M %p") }}
+    </td>
+    <td>
+        {{ event.end.strftime("%d %b, %Y -- %I:%M %p") }}
+    </td>
+  </a>
+</tr>
+{% endfor %}

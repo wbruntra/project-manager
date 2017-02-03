@@ -1,0 +1,18 @@
+{% extends 'layout.html' %}
+
+{% block title %}Calendars{% endblock %}
+
+{% block body %}
+<div class="container">
+  <form>
+  <ul>
+  {% for calendar in calendars %}
+  <li>
+    <input type="radio" name="cal" value="{{ calendar.id }}">{{ calendar.summary }}
+  </li>
+  {% endfor %}
+  </ul>
+  </form>
+ {{ calendars }}
+</div>
+{% endblock %}

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Appointment Maker</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="/css/starter-template.css" rel="stylesheet">
+  </head>
+
+  <body>
+
+    {% include 'partials/navbar.html' %}
+
+
+    <div class="container">
+      <div class="starter-template">
+  <div class="form-group">
+    <div class="col-sm-10">
+      <h2>Subprojects for {{ project.name }}</h2>
+      <div class="row">
+      <ul class="list-group col-sm-6">
+        {% for subproject in subprojects %}
+          <li class="list-group-item clearfix">{{ subproject.name }}
+            <button data-href="/subprojects/delete/{{ subproject.key.id() }}" class="btn btn-default pull-right delete-button">Delete</button>
+          </li>
+        {% endfor %}
+      </ul>
+    </div>
+      <form method="post" action="/subprojects/create"
+      class="form-horizontal">
+      <input type="hidden" name="project-id" value="{{ project.key.id() }}" >
+        <div class="form-group">
+          <label class="control-label col-sm-2" for="title">Create New:</label>
+          <div class="col-sm-10">
+            <input type="text" class="form-control" id="title" name="name" placeholder="Subproject Name">
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="col-sm-offset-2 col-sm-10">
+            <button type="submit" class="btn btn-default">Submit</button>
+          </div>
+          <hr>
+          <button id="delete-button" class="btn btn-default" data-project-id="{{ project.key.id() }}">Delete Project</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</form>
+
+      </div>
+
+    </div><!-- /.container -->
+
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+    <script src="/bootstrap/js/bootstrap.min.js"></script>
+    <script src="/js/projects.js"></script>
+  </body>
+</html>
