@@ -5,6 +5,7 @@ from google.appengine.ext import ndb
 from string import letters
 
 from master import Handler
+import time
 
 ##### user stuff
 def make_salt(length = 5):
@@ -22,7 +23,11 @@ def valid_pw(name, password, h):
 
 class User(ndb.Model):
     email = ndb.StringProperty(required= True)
-    pw_hash = ndb.StringProperty(required = True)
+    name = ndb.StringProperty()
+    pw_hash = ndb.StringProperty()
+    restrict = ndb.IntegerProperty()
+    registered = ndb.BooleanProperty()
+    created = ndb.DateTimeProperty(auto_now_add = True)
 
     @classmethod
     def by_email(cls, email):
@@ -41,16 +46,69 @@ class User(ndb.Model):
         if u and valid_pw(email, pw, u.pw_hash):
             return u
 
+class Initialize(Handler):
+    def get(self):
+        email = "bill.bruntrager@gmail.com"
+        password = "secret"
+        restrict = 0
+        user = User.register(email, password)
+        user.restrict = restrict
+        user.registered = True
+        user.name = "Bill Bruntrager"
+        user.put()
+        self.redirect('/')
+
+class Add(Handler):
+    def post(self):
+        name = self.request.get('name')
+        email = self.request.get('email')
+        admin = self.request.get('admin')
+        if (admin == 'on'):
+            restrict = 0
+        else:
+            restrict = 1
+        user = User(name = name,
+                    email = email,
+                    restrict = restrict,
+                    registered = False)
+        user.put()
+        time.sleep(.5)
+        self.redirect("/collaborators")
+
 class Register(Handler):
     def get(self):
         self.render('register.html')
     def post(self):
         email = self.request.get('email')
         password = self.request.get('password')
-        user = User.register(email, password)
-        user.put()
-        self.session['email'] = email
-        self.redirect('/')
+        c = User.by_email(email)
+        if not c:
+            self.render('bad-registration.html')
+        else:
+            pw_hash = make_pw_hash(email, password)
+            c.registered = True
+            c.pw_hash = pw_hash
+            c.put()
+            self.session['email'] = email
+            self.redirect('/')
+
+class Change(Handler):
+    def get(self):
+        email = self.session['email']
+        user = User.by_email(email)
+        self.render('profile-edit.html', user = user)
+    def post(self):
+        email = self.session['email']
+        old_pw = self.request.get('old_pw')
+        new_pw = self.request.get('password')
+        u = User.login(email, old_pw)
+        if not u:
+            self.write('Incorrect password!')
+        else:
+            pw_hash = make_pw_hash(email, new_pw)
+            u.pw_hash = pw_hash
+            u.put()
+            self.redirect('/')
 
 class Login(Handler):
     def get(self):
@@ -58,12 +116,17 @@ class Login(Handler):
     def post(self):
         email = self.request.get('email')
         password = self.request.get('password')
-        u = User.login(email, password)
-        if u:
-            self.session['email'] = self.request.get('email')
-            self.redirect("/")
+        c = User.by_email(email)
+        if not c or not c.registered:
+            self.render('bad-registration.html')
         else:
-            self.write("Invalid credentials!")
+            u = User.login(email, password)
+            if u:
+                self.session['email'] = self.request.get('email')
+                self.session['restrict'] = u.restrict
+                self.redirect("/")
+            else:
+                self.write("Invalid credentials!")
 
 class Logout(Handler):
     def get(self):

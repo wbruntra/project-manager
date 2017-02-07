@@ -17,7 +17,7 @@ class Create(Handler):
                         project=project.key)
         subproject.put()
         time.sleep(.5)
-        self.redirect('/projects/manage/{}'.format(project.key.id()))
+        self.redirect('/admin')
 
 class Delete(Handler):
     def get(self, subproject_id):

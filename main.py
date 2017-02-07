@@ -35,13 +35,21 @@ config['webapp2_extras.sessions'] = {
 class MainHandler(Handler):
     def get(self):
         email = self.session.get('email')
-        if not email:
+        user = User.by_email(email)
+        if not email or not email:
             self.redirect('/login')
-        projects = Project.query().order(Project.created)
-        events = Event.query().order(Event.end)
-        self.render('index.html',
-            projects = projects,
-            events = events)
+        else:
+            if not user.restrict:
+                projects = Project.query().order(Project.created)
+                events = Event.query().order(Event.end)
+                self.render('index.html',
+                    projects = projects,
+                    events = events)
+            else:
+                projects = Project.query().order(Project.created)
+                events = Event.query(Event.collaborator == email)
+                self.render('index.html', events = events,
+                    projects = projects)
 
 class RetrieveSubprojects(Handler):
     def get(self, project_id):
@@ -66,13 +74,16 @@ app = webapp2.WSGIApplication([
     ('/projects/create', projects.Create),
     ('/projects/delete/([0-9]+)', projects.Delete),
     ('/projects/manage/([0-9]+)', projects.View),
+    ('/projects/edit', projects.Edit),
     ('/subprojects/create', subprojects.Create),
     ('/subprojects/delete/([0-9]+)', subprojects.Delete),
     ('/collaborators', collaborators.Manage),
-    ('/collaborators/add', collaborators.Create),
+    ('/collaborators/add', users.Add),
     ('/login', users.Login),
     ('/register', users.Register),
+    ('/profile', users.Change),
     ('/logout', users.Logout),
+    ('/init', users.Initialize),
     ('/api/get/subprojects/([0-9]+)', RetrieveSubprojects),
     (decorator.callback_path, decorator.callback_handler()),
 ], config=config, debug=True)

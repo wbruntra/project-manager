@@ -1,11 +1,5 @@
 from google.appengine.ext import ndb
 
-class Collaborator(ndb.Model):
-    name = ndb.StringProperty()
-    email = ndb.StringProperty()
-    admin = ndb.BooleanProperty()
-    created = ndb.DateTimeProperty(auto_now_add = True)
-
 class Project(ndb.Model):
     name = ndb.StringProperty()
     manager = ndb.StringProperty()

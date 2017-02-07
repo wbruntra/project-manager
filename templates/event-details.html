@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Appointment Maker</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom styles for this template -->
+    <link href="/css/starter-template.css" rel="stylesheet">
+  </head>
+
+  <body>
+
+    {% include 'partials/navbar.html' %}
+
+
+    <div class="container">
+
+<div class="starter-template">
+<form id="form" method="post" action="/events/update/{{ event.key.id() }}" class="form-horizontal">
+  <div class="form-group">
+    <label class="control-label col-sm-2" for="project">Project:</label>
+    <div class="col-sm-10">
+      <select name="project-id" class="form-control" id="project">
+        <option selected value="{{ event.project.get().key.id() }}"> {{ event.project.get().name }}</option>
+        {% for project in projects %}
+        <option value="{{ project.key.id() }}">{{ project.name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+  </div>
+  <div class="form-group">
+    <label class="control-label col-sm-2" for="subproject">Subgroup:</label>
+    <div class="col-sm-10">
+      <select name="subproject-id" class="form-control" id="subproject">
+        <option selected value="{{ event.subproject.get().key.id() }}">{{ event.subproject.get().name }} </option>
+      </select>
+    </div>
+  </div>
+    <div class="form-group">
+      <label class="control-label col-sm-2" for="start">Start Date:</label>
+      <div class="col-sm-5">
+          <div class="input-group date" id="datetimepicker-start">
+            <input type='text' name="start" class="form-control">
+            <span class="input-group-addon">
+                <span class="glyphicon glyphicon-calendar"></span>
+            </span>
+          </div>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="control-label col-sm-2" for="datetimepicker-end">End Date:</label>
+      <div class="col-sm-5">
+          <div class="input-group date" id="datetimepicker-end">
+            <input type='text' name="end" class="form-control">
+            <span class="input-group-addon">
+                <span class="glyphicon glyphicon-calendar"></span>
+            </span>
+          </div>
+      </div>
+    </div>
+  <div class="form-group">
+    <label class="control-label col-sm-2" for="title">Title:</label>
+    <div class="col-sm-10">
+      <input type="text" name="title" class="form-control" id="title" value="{{ event.title }}" placeholder="Event Title">
+    </div>
+  </div>
+  <div class="form-group">
+    <label class="control-label col-sm-2" for="comment">Comment:</label>
+    <div class="col-sm-10">
+      <textarea name="comments" class="form-control" rows="5" id="comment">{{ event.comments }}</textarea>
+    </div>
+  </div>
+  <div class="form-group">
+    <label class="control-label col-sm-2" for="par">Par:</label>
+    <div class="col-sm-10">
+      <input type="text" name="par" class="form-control" id="par" placeholder="Par Value" value="{{ event.par }}">
+    </div>
+  </div>
+  <div class="form-group">
+    <label class="control-label col-sm-2" for="collab">Collaborator:</label>
+    <div class="col-sm-10">
+      <input type="text" name="collaborators" class="form-control" id="collaborators" placeholder="Email of collaborator"
+      value="{{ ', '.join(event.collaborator) }}">
+    </div>
+  </div>
+</form>
+
+    </div><!-- /.container -->
+
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+    <script src="/js/moment-with-locales.min.js"></script>
+    <script src="/bootstrap/js/bootstrap.min.js"></script>
+    <script src="/js/bootstrap-datetimepicker.min.js"></script>
+    <script type="text/javascript">
+    $(function () {
+        $('#datetimepicker-start').datetimepicker({
+            format: 'DD/MM/YYYY hh:mm A',
+            sideBySide: true,
+            stepping:30,
+            defaultDate: new Date("{{ event.start.strftime('%Y-%m-%dT%H:%M-05:00') }}"),
+        });
+        $('#datetimepicker-end').datetimepicker({
+            format: 'DD/MM/YYYY hh:mm A',
+            defaultDate: new Date("{{ event.end.strftime('%Y-%m-%dT%H:%M-05:00') }}"),
+            sideBySide: true,
+            stepping:30
+        });
+    });
+</script>
+    <script>
+      $("#form :input").attr("readonly", true);
+    </script>
+  </body>
+</html>

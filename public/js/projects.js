@@ -1,4 +1,4 @@
-$('#delete-button').click(function(e) {
+$('.delete-project').click(function(e) {
   console.log('button pushed');
   e.preventDefault();
   if (confirm('Really delete?')) {
@@ -6,7 +6,7 @@ $('#delete-button').click(function(e) {
   }
 });
 
-$('.delete-button').click(function(e) {
+$('.delete-subproject').click(function(e) {
   console.log('delete subproject!')
   e.preventDefault();
   if (confirm('Really delete?')) {

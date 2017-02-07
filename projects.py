@@ -24,6 +24,11 @@ class Manage(Handler):
             data[project.key] = subprojects
         self.render('admin_page.html', projects = projects, data = data)
 
+class Edit(Handler):
+    def get(self):
+        projects = Project.query().order(Project.created)
+        self.render('edit-projects.html', projects = projects)
+
 class View(Handler):
     def get(self, project_id):
         project = Project.get_by_id(int(project_id))
@@ -40,7 +45,7 @@ class Create(Handler):
                         manager=manager)
         project.put()
         time.sleep(.5)
-        self.redirect("/")
+        self.redirect("/admin")
 
 class Delete(Handler):
     def get(self, project_id):
@@ -53,4 +58,4 @@ class Delete(Handler):
             subproject.key.delete()
         project.key.delete()
         time.sleep(.5)
-        self.redirect('/admin')
+        self.redirect('/projects/edit')

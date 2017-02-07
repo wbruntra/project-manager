@@ -1,6 +1,7 @@
 import webapp2
 from master import Handler
 from models import *
+from users import User
 
 import time
 import datetime
@@ -20,13 +21,20 @@ class List(Handler):
 
 class View(Handler):
     def get(self, event_id):
+        email = self.session.get('email')
+        user = User.by_email(email)
         event = Event.get_by_id(int(event_id))
         projects = Project.query().order(Project.created)
-        collaborators = Collaborator.query()
+        collaborators = User.query()
         collaborator_list = []
         for collaborator in collaborators:
             collaborator_list.append(str(collaborator.email))
-        self.render('event_view.html', projects = projects, event = event, collaborator_list = collaborator_list)
+        if (user.restrict == 0):
+            self.render('event_view.html',
+             projects = projects, event = event,
+             collaborator_list = collaborator_list)
+        else:
+            self.render('event-details.html', event = event)
 
 def process_emails(s):
     emails = s.split(',')
@@ -54,7 +62,7 @@ def get_fields(req, fields):
 class Create(Handler):
     def get(self):
         email = self.session.get('email')
-        collaborators = Collaborator.query()
+        collaborators = User.query()
         projects = Project.query().order(Project.created)
         collaborator_list = []
         for collaborator in collaborators:

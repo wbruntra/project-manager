@@ -12,9 +12,12 @@
     <div id="navbar" class="collapse navbar-collapse">
       <ul class="nav navbar-nav">
         {% if session['email'] %}
-        <li><a href="/admin">Manage</a></li>
-        <li><a href="/events/create">New</a></li>
-        <li class="active"><a href="/logout">{{ session['email' ] }} (logout)</a></li>
+          {% if session['restrict'] == 0 %}
+            <li><a href="/admin">Manage</a></li>
+            <li><a href="/events/create">New</a></li>
+          {% endif %}
+        <li><a href="/profile">{{ session['email' ] }}</a></li>
+        <li><a href="/logout">(logout)</a></li>
         {% else %}
         <li><a href="/login">Log in</a></li>
         <li><a href="/register">Register</a></li>
