@@ -29,7 +29,7 @@ from projects import get_subprojects
 
 config = {}
 config['webapp2_extras.sessions'] = {
-    'secret_key': 'ezOhxK7i41amGYUbLC5C',
+    'secret_key': 'EZOhxK7i41amGYUbLC5C',
 }
 
 class MainHandler(Handler):
@@ -42,13 +42,20 @@ class MainHandler(Handler):
             if not user.restrict:
                 projects = Project.query().order(Project.created)
                 events = Event.query().order(Event.end)
+                collaborators = User.query()
                 self.render('index.html',
                     projects = projects,
-                    events = events)
+                    events = events,
+                    collaborators = collaborators)
             else:
-                projects = Project.query().order(Project.created)
                 events = Event.query(Event.collaborator == email)
-                self.render('index.html', events = events,
+                projects = []
+                for event in events:
+                    project = event.project
+                    if project not in projects:
+                        projects.append(project.get())
+                self.render('index.html',
+                    events = events,
                     projects = projects)
 
 class RetrieveSubprojects(Handler):

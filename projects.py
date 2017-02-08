@@ -1,6 +1,7 @@
 import webapp2
 from master import Handler
 from models import *
+from users import User
 
 import time
 
@@ -15,14 +16,18 @@ def get_subprojects(project_id):
 class Manage(Handler):
     def get(self):
         email = self.session.get('email')
-        projects = Project.query().order(Project.created)
-        data = {}
-        for project in projects:
-            subprojects = Subproject.query(
-                Subproject.project == project.key
-            )
-            data[project.key] = subprojects
-        self.render('admin_page.html', projects = projects, data = data)
+        user = User.by_email(email)
+        if user.restrict:
+            self.write('You do not have admin access')
+        else:
+            projects = Project.query().order(Project.created)
+            data = {}
+            for project in projects:
+                subprojects = Subproject.query(
+                    Subproject.project == project.key
+                )
+                data[project.key] = subprojects
+            self.render('admin_page.html', projects = projects, data = data)
 
 class Edit(Handler):
     def get(self):

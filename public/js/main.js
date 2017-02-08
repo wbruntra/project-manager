@@ -20,6 +20,6 @@ $('form').submit(function(e) {
   });
 });
 
-$('.clickable-row').click(function(){
+$(document).on('click','.clickable-row',function(){
   window.document.location = $(this).data('href');
 });

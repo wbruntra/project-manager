@@ -11,12 +11,18 @@ import logging
 class List(Handler):
     def post(self):
         project_ids = self.request.get_all('project')
+        collaborator_emails = self.request.get_all('email')
         project_ids = [int(x) for x in project_ids]
         project_keys = []
         for project_id in project_ids:
             project = Project.get_by_id(project_id)
             project_keys.append(project.key)
-        events = Event.query(Event.project.IN(project_keys))
+        events = Event.query()
+        if project_keys:
+            events = events.filter(Event.project.IN(project_keys))
+        if collaborator_emails:
+            events = events.filter(
+                Event.collaborator.IN(collaborator_emails))
         self.render('partials/event_list.html', events = events)
 
 class View(Handler):

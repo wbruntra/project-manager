@@ -90,6 +90,7 @@ class Register(Handler):
             c.pw_hash = pw_hash
             c.put()
             self.session['email'] = email
+            self.session['restrict'] = c.restrict
             self.redirect('/')
 
 class Change(Handler):
@@ -117,8 +118,10 @@ class Login(Handler):
         email = self.request.get('email')
         password = self.request.get('password')
         c = User.by_email(email)
-        if not c or not c.registered:
+        if not c:
             self.render('bad-registration.html')
+        elif not c.registered:
+            self.write('You need to register an account first.')
         else:
             u = User.login(email, password)
             if u:
